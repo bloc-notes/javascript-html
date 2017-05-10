@@ -1,0 +1,35 @@
+﻿body { font-family:verdana; font-size:13pt; color:Black; }
+.sTexteCentre { text-align:center; }
+.sLargeurDiv { width:850px; padding-left:10px; }
+.sEntete { background-color:#073C7E; margin-bottom:5px;  border-bottom-width:2px;  border-bottom-style:solid; color: #D4A017;}
+.sCorps { background-color:#073C7E; }
+.sFlottantAGauche { float:left; margin-bottom:10px;}
+.sFlottantADroite { float:right; margin-bottom:10px;}
+.sPiedDePage {clear:both; background-color:#073C7E; font-size:90%; margin-top:5px;  border-top-width:2px;  border-top-style:solid;  color:#D4A017; }
+.sTitreApp { font-size:150%; font-weight:bold; }
+.sTitreSection { font-size:120%; font-weight:bold;text-decoration:underline;}
+.sAuteurApp { font-size:120%; font-variant:small-caps; font-style:italic; font-weight:bold;} 
+.sResultat { color:Green; font-weight:bold; border:solid 1px black; text-align:right; }
+.sResultatC { color:#073C7E; background-color:green; font-weight:bold; border:solid 1px black; text-align:right;}
+.sResultatCNA { color:#073C7E; background-color:green; font-weight:bold; border:solid 1px black; text-align:right;}
+.sEnteteColonneTableau { color:#073C7E;  background-color:yellow; border:solid 1px black; text-align:right;}
+.sEnteteLigneTableau { color:#073C7E;  background-color:yellow; border:solid 1px black; text-align:left;}
+.sHauteurReduit { line-height:5px; }
+.sZoneDeTexteNormal {}
+.sCouleurFondZoneDeTexteNormal {background-color:purple; color: white;}
+
+input {text-align:right; font-weight:bold; font-size:100%; width:25%;} 
+input[type="button"] {font-size:120%; font-variant:small-caps; width:100%; }
+input[type="text"]:focus {border-style:outset;}
+
+a:link { color:Black; text-decoration:none;}
+a:visited { color:Red; text-decoration:none;} 
+a:hover { color:Green; text-decoration:underline; }
+		
+a:link img, a:visited img { border:none; }
+a:hover img { border-style:double; border-width:2px; border-color:Green;}
+
+.sNonNumerique{background-color: red; color: white;}
+.sHorsLimite{background-color: orange; color: white;}
+.sValide{background-color: green; color: white;}
+.sNonQuart-Heure{background-color: blue; color: white;}

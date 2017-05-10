@@ -1,0 +1,28 @@
+﻿body { font-family:arial; font-size:12pt; color:Blue; }
+table { padding-left:10px; border-collapse:collapse; }
+.sCellDate { width:58px; padding-right:5px; border:solid 1px black; text-align:right; }
+.sCellEnteteColonne { color:Black; font-weight:bold; background-color:#CCCCCC; font-size:60%;}
+.sCellJourCourant {  background-color:#D0D0D0; color: Red; font-weight:bold; }
+.sCellAutreJour { color: Gray; font-weight: normal;}
+.sCellBouton { width:130px; text-align:center;}
+.sTexteCentre { text-align:center; }
+.sLargeurDiv { width:441px; padding-left:10px;}
+.sEntete { background-color:#D0D0D0; margin-bottom:5px;  border-bottom-width:2px;  border-bottom-style:solid; }
+.sCorps { }
+.sPiedDePage {clear:both; background-color:#D0D0D0;  font-size:90%; margin-top:5px;  border-top-width:2px;  border-top-style:solid; }
+.sTitreApp { font-size:150%; font-weight:bold; text-decoration:underline; } 
+.sTitreSection { font-size:120%; font-weight:bold; text-align: center; } 
+.sAuteurApp { font-variant:small-caps; font-style:italic; font-weight:bold;} 
+.sDateSelectionnee { font-size:100%; font-weight:bold; background-color:Blue; color:White;}
+
+
+select,option {color:Black; font-weight:bold; }
+input[type="button"] {font-variant:small-caps; font-weight:bold; }
+
+a { font-size:90%;}
+a:link { color:Black; text-decoration:none;}
+a:visited { color:Red; text-decoration:none;} 
+a:hover { color:Blue; text-decoration:underline; }
+		
+a:link img, a:visited img { border:none; }
+a:hover img { border-style:double; border-width:2px; border-color:Black;}

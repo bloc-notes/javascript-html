@@ -1,0 +1,231 @@
+﻿<!DOCTYPE html
+PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<head>
+
+   <!-- Nécessaire pour validation -->
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+   <!-- Titre de la page -->
+   <title>Affichage du calendrier par Philippe Doyon</title>
+
+   <!-- Insertion d’un fichier contenant une feuille de style -->
+   <link rel="stylesheet" type="text/css" href="styleProjet2.css" />
+
+   <!-- Feuille de style locale -->
+   <style type="text/css">
+   </style>
+
+   <!-- Insertion d’un fichier contenant le code JavaScript -->
+   <script type="text/javascript" src="libValidationBaseER.js"></script>
+   <script type="text/javascript" src="libUtilitaires.js"></script>
+   <script type="text/javascript" src="date.js"></script>    
+   
+   <!-- Insertion du code JavaScript local -->
+   <script type="text/javascript">
+       function recupereDateEtConstruitCalendrier() {
+           // A PROGRAMMER:
+           // Cette fonction doit:
+           // 1- Récupérer la date qui a été transmise à la page Web
+           // 2- Si aucune date n'a été transmise, charger la page selectionne-date.htm
+           // 3- Afficher sur la page Web, le mois (en littéral) ainsi que l'année
+	       // 4- Masquer le bouton btnAnneePrecedente
+           //    si le calendrier est celui de 1900
+           // 5- Masquer le bouton btnAnneeSuivante
+           //    si le calendrier est celui de 2199
+  	       // 6- Masquer le bouton btnMoisPrecedent
+           //    si le calendrier est celui de Janvier 1900
+           // 7- Masquer le bouton btnMoisSuivant
+           //    si le calendrier est celui de Décembre 2199
+           // 8- Construire et afficher le calendrier du mois 
+		   //    dans un flux de données
+		   var intJour = +recupereDonnee('ddlJour')
+		   var intMois = +recupereDonnee('ddlMois')
+		   var intAnneePartie2 = recupereDonnee('ddlAnnee')
+		   var intAnneePartie1 = recupereDonnee('ddlSiecle')
+		   
+			if (intJour == null || intMois == null || intAnneePartie2 == null || intAnneePartie1 == null) {
+				location.href = 'selectionne-date.htm'
+            }
+			else{
+				var intAnnee = intAnneePartie2.toString().length == 1? +(recupereDonnee('ddlSiecle') + ('0' + intAnneePartie2)) : +(recupereDonnee('ddlSiecle') + intAnneePartie2)
+				b('lblMois',moisEnLitteral(intMois, true))
+				b('lblAnnee',intAnnee)
+				if (intAnnee == 1900) {
+                    masqueB('btnAnneePrecedente',true)
+					if (intMois == 1) {
+                        masqueB('btnMoisPrecedent',true)
+                    }
+                }
+				if (intAnnee == 2199) {
+                    masqueB('btnAnneeSuivante',true)
+					if (test) {
+                        masqueB('btnMoisSuivant')
+                    }
+                }
+				
+				var strFlux = '<table><tr>'
+				var intJourCalendrier = 1
+				var blnFinCalendrier = false
+				
+				//Jour de la semaine textuellement
+				for (var t = 1;t<=7;t++) {
+					strFlux += '<td class="sCellEnteteColonne sCellDate">' + jourSemaineEnLitteral(t, true) + '</td>'
+				}
+				strFlux += '</tr><tr>'
+						
+				var intJourSerie = dateEnNoSerie(1, intMois, intAnnee) - noSerieEnJourSemaine(dateEnNoSerie(1, intMois, intAnnee)) +1
+				intJourCalendrier -= noSerieEnJourSemaine(dateEnNoSerie(1, intMois, intAnnee)) + 1
+				
+				//reste du calenrier
+				for(var q = 1; q <= 7;q++){
+					if (intJourCalendrier < -1 || intJourCalendrier +1 >= nombreJoursMois(intMois, intAnnee)) {
+						strFlux += '<td class="sCellAutreJour sCellDate">' + noSerieEnJourDansDate(intJourSerie) + '</td>'
+					}
+					else{
+						strFlux += '<td class="sCellDate' + (intJour == intJourCalendrier +2? ' sCellJourCourant':'') + '">'+
+							noSerieEnJourDansDate(intJourSerie) + '</td>'
+					}
+					
+					intJourSerie++
+					intJourCalendrier++
+					
+					if ((q==7) && (nombreJoursMois(intMois, intAnnee) > intJourCalendrier + 1)) {
+						q=0
+						strFlux += '</tr><tr>'
+					}
+				}
+				strFlux +='</tr></table>'
+				b('lblCalendrierCourant',strFlux)
+			}
+    }
+   </script>
+
+   <script type="text/javascript">
+        function chargePageSelectionneDate() {
+  		    // A PROGRAMMER:
+		    // Cette fonction doit charger la page selectionne-date.htm
+		    // (en lui transmettant la date courante)
+			location.href = 'selectionne-date.htm?ddlJour=' + recupereDonnee('ddlJour') + '&ddlMois=' + recupereDonnee('ddlMois') + '&ddlSiecle=' + recupereDonnee('ddlSiecle')
+				+ '&ddlAnnee=' + recupereDonnee('ddlAnnee')
+        }
+   </script>
+
+   <script type="text/javascript">
+       function nouveauCalendrier(binMois, intSens) {
+           // A PROGRAMMER:
+           // Cette fonction doit afficher un nouveau calendrier:
+		   // le calendrier du mois suivant (binMois=true, intSens=1) ou
+		   // le calendrier du mois précédent (binMois=true, intSens=-1) ou
+		   // le calendrier de l'année suivante (binMois=false, intSens=1) ou
+		   // le calendrier de l'année précédente (binMois=false, intSens=-1) ou
+		   // le calendrier de la date d'aujourd'hui (intSens=0)
+		   // Les données doivent être transmises manuellement à la même page Web
+		   var intJour = +recupereDonnee('ddlJour')
+		   var intMois = +recupereDonnee('ddlMois')
+		   var intAnneePartie2 = recupereDonnee('ddlAnnee')
+		   var intAnneePartie1 = recupereDonnee('ddlSiecle')
+		   
+		   if (intJour == null || intMois == null || intAnneePartie2 == null || intAnneePartie1 == null) {
+				location.href = 'selectionne-date.htm'
+            }
+			else{
+				var intAnnee = intAnneePartie2.toString().length == 1? +(intAnneePartie1 + ('0' + intAnneePartie2)) : +(intAnneePartie1 + intAnneePartie2)
+				
+				//gestion changer mois/année
+				if (binMois == true) {
+					if ((intMois + intSens) == 0) {
+						intMois = 12
+						intAnnee--
+					}
+					else if ((intMois + intSens) == 13) {
+						intMois = 1
+						intAnnee++
+					}
+					else{
+						intMois += intSens
+					}
+				}
+				else if(intSens == 0){
+					intJour = recupereJourActuel()
+					intMois = recupereMoisActuel()
+					intAnnee = recupereAnneeActuelle()
+				}
+				else if (binMois == false) {
+					intAnnee += intSens
+				}
+				
+				intJour = (dateValide(intJour, intMois, intAnnee) != true)?1:intJour
+				
+				location.href = '?ddlJour=' + intJour + '&ddlMois=' + intMois + '&ddlSiecle=' + intAnnee.toString().substring(0,2) + '&ddlAnnee=' + intAnnee.toString().substring(2,4)
+			}
+        }
+   </script>
+</head>
+
+<body onload="recupereDateEtConstruitCalendrier()">
+    <div id="divEntete" class="sTexteCentre sLargeurDiv sEntete">
+        <p> 
+            <span class="sTitreApp">
+                Affichage d'un calendrier<br />
+            </span> par 
+            <span class="sAuteurApp">
+                Philippe Doyon
+            </span> 
+       </p>
+    </div>
+    
+   <div id="divCorps" class="sLargeurDiv sCorps">
+		<div id="divPanneauBoutons">
+            <table>
+                <tr>
+                    <td class="sCellBouton">
+                        <input id="btnMoisPrecedent" type="button" value="<< Mois précédent" onclick="nouveauCalendrier(true, -1)" />
+                    </td>
+                    <td class="sCellBouton">
+                        <input id="btnNouvelleDate" class="sBoutonAffiche" type="button" value="Nouvelle date" onclick="chargePageSelectionneDate()" />
+                    </td>
+                    <td class="sCellBouton">
+                        <input id="btnMoisSuivant" class="sBoutonAffiche" type="button" value="Mois suivant >>" onclick="nouveauCalendrier(true, 1)" />
+                    </td>   
+                </tr>
+                <tr>
+                    <td class="sCellBouton">
+                        <input id="btnAnneePrecedente" class="sBoutonAffiche" type="button" value="<< Année précédente" onclick="nouveauCalendrier(false, -1)" />
+                    </td>
+                    <td class="sCellBouton">
+                        <input id="btnAujourdhui" class="sBoutonAffiche" type="button" value="Aujourd'hui" onclick="nouveauCalendrier(false, 0)" />
+                   </td>
+                    <td class="sCellBouton">
+                        <input id="btnAnneeSuivante" class="sBoutonAffiche" type="button" value="Année suivante >>" onclick="nouveauCalendrier(false, 1)" />   
+                    </td>
+                </tr>
+            </table>
+		</div>
+
+        <div id="divPanneauCalendrier">
+        <p class="sTexteCentre sTitreSection">
+              <span id="lblMois"></span> <span id="lblAnnee"></span>
+            <span id="lblCalendrierCourant"></span>
+        </p>
+   	    </div>
+    </div>
+   
+    <div id="divPiedDePage" class="sLargeurDiv sPiedDePage">
+        <p>
+            <a href="http://www.cgodin.qc.ca">
+                <img src="logoCGG.jpg" alt="logoCGG" />
+            </a> 
+			<a href="http://www.cgodin.qc.ca/programme/techniques-informatique/">
+	           Département d'informatique du Cégep Gérald-Godin
+	        </a> 
+            <br />
+            &copy; Philippe Doyon 2016
+        </p>
+    </div>
+
+</body>
+
+</html>

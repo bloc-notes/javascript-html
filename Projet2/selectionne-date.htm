@@ -1,0 +1,223 @@
+﻿<!DOCTYPE html
+PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<head>
+
+   <!-- Nécessaire pour validation -->
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+   <!-- Titre de la page -->
+   <title>Saisie de la date par Philippe Doyon</title>
+
+   <!-- Insertion d’un fichier contenant une feuille de style -->
+   <link rel="stylesheet" type="text/css" href="styleProjet2.css" />
+
+   <!-- Feuille de style locale -->
+   <style type="text/css">
+   </style>
+
+   <!-- Insertion d’un fichier contenant le code JavaScript -->
+   <script type="text/javascript" src="libValidationBaseER.js"></script>
+   <script type="text/javascript" src="libUtilitaires.js"></script>
+   <script type="text/javascript" src="date.js"></script>    
+   
+   <!-- Insertion du code JavaScript local -->
+      
+   <script type="text/javascript">
+         function initialiseAvecDateCourante() {
+  		     // A PROGRAMMER au début du projet:
+		     // Cette fonction doit récupérer la date du jour
+             // et l'affecter à ddlJour, ddlMois, ddlSiecle et ddlAnnee.
+             //
+             // A PROGRAMMER à la fin du projet:
+             // Si aucune date n'a été transmise à la page Web:
+             // Cette fonction doit récupérer la date du jour
+             // et l'affecter à ddlJour, ddlMois, ddlSiecle et ddlAnnee.
+             // Si une date a été transmise à la page Web:
+		     // Cette fonction doit récuperer la date transmise
+             // et l'affecter à ddlJour, ddlMois, ddlSiecle et ddlAnnee.
+			 
+			 if (location.search == '') {
+				  b('ddlJour',recupereJourActuel())
+				  b('ddlMois',recupereMoisActuel())
+				  b('ddlSiecle',recupereAnneeActuelle().toString().substr(0,2))
+				  b('ddlAnnee', recupereAnneeActuelle().toString().substr(2))
+			 }
+			 else{
+				  b('ddlJour',recupereDonnee('ddlJour'))
+				  b('ddlMois',recupereDonnee('ddlMois'))
+				  b('ddlSiecle',recupereDonnee('ddlSiecle'))
+				  b('ddlAnnee', recupereDonnee('ddlAnnee'))
+			 }
+            }
+   </script>
+
+    <script type="text/javascript">
+          function afficheBoutonCalendrierEtDateSelectionnee() {
+              // A PROGRAMMER:
+			  // Cette fonction doit aller chercher la date sélectionnée sur la page Web.
+              // Si la date sélectionnée est valide:
+			  // Cette fonction doit afficher le bouton btnCalendrier
+              // et afficher la date sélectionnée en format littéral long 
+              // Si la date sélectionnée n'est pas valide:
+              // Cette fonction doit masquer le bouton btnCalendrier
+              // et effacer la date sélectionnée
+			  var intJours = +b('ddlJour')
+			  var intMois = +b('ddlMois')
+			  var intAnneePartie2 = b('ddlAnnee')
+			  var intAnnee = intAnneePartie2.toString().length == 1? b('ddlSiecle') + ('0' + intAnneePartie2) : b('ddlSiecle') + intAnneePartie2
+			  
+			  if (dateValide(intJours,intMois,intAnnee)) {
+				  masqueB('btnCalendrier',false)
+				  b('lblDateSelectionnee',dateEnLitteralLong(intJours,intMois,intAnnee,false))
+              }
+			  else{
+				  masqueB('btnCalendrier',true)
+				  b('lblDateSelectionnee','')
+			  }
+          }
+   </script>
+
+    <script type="text/javascript">
+        function actualiseCalendrier() {
+              // A PROGRAMMER:
+              // Cette fonction doit recharger la page Web
+			  location.reload()
+          }
+   </script>
+
+    <script type="text/javascript">
+          function chargePageAffichageCalendrier() {
+             // A PROGRAMMER:
+		     // Cette fonction doit transmettre les données du formulaire frmSaisie
+		     // à la page Web affiche-calendrier.htm
+			 document.getElementById('frmSaisie').submit()
+           }
+   </script>
+
+</head>
+
+<body onload="initialiseAvecDateCourante(); afficheBoutonCalendrierEtDateSelectionnee()">
+    <div id="divEntete" class="sTexteCentre sLargeurDiv sEntete">
+        <p> 
+            <span class="sTitreApp">
+                Sélection d'une date<br />
+            </span> par 
+            <span class="sAuteurApp">
+                Philippe Doyon
+            </span> 
+       </p>
+    </div>
+    
+   <div id="divCorps" class="sLargeurDiv sCorps">
+        <div id="divPanneauSaisie">
+            <p class="sTitreSection">
+                Sélection de la date désirée
+            </p>
+  
+            <form id="frmSaisie" name="frmSaisie" method="get" action="affiche-calendrier.htm">
+
+                <input id="btnActualiser" name="btnActualiser" type="button"
+                        value="Actualiser" onclick="actualiseCalendrier()" />
+ 
+                <select id="ddlJour" name="ddlJour" class="" onchange="afficheBoutonCalendrierEtDateSelectionnee()">
+                    <script type="text/javascript">
+                        // A PROGRAMMER:
+                        // Écrivez ici le code Javascript qui génére le code XHTML 
+                        // des options pour les jours 1 à 31 inclusivement.
+                        // Par exemple, le jour 1 devrait donner le XHTML
+                        // <option value="1">1</option>
+						// Par exemple, le jour 31 devrait donner le XHTML
+                        // <option value="31">31</option>
+						// PROGRAMMER CELA DANS UNE BOUCLE for
+						
+						for (var q = 1; q<= 31;q++){
+							  document.write('<option value="' + q + '">' + q + '</option>')
+						}	
+                    </script>
+		         </select>
+
+                 <select id="ddlMois" name="ddlMois" class="" onchange="afficheBoutonCalendrierEtDateSelectionnee()">
+                    <script type="text/javascript">
+                        // A PROGRAMMER:
+                        // Écrivez ici le code Javascript qui génére le code XHTML 
+                        // des options pour les mois 1 à 12 inclusivement.
+                        // Par exemple, le mois 1 devrait donner le XHTML
+                        // <option value="1">Janvier</option>
+						// Par exemple, le mois 12 devrait donner le XHTML
+                        // <option value="12">Décembre</option>
+                        // Utiliser la fonction moisEnLitteral pour obtenir le mois en lettres
+						// PROGRAMMER CELA DANS UNE BOUCLE for
+						for (var q = 1; q<= 12;q++){
+							  document.write('<option value="' + q + '">' + moisEnLitteral(q,true) + '</option>')
+						}
+ 			        </script>
+                 </select>
+         
+		         <select id="ddlSiecle" name="ddlSiecle" class="" onchange="afficheBoutonCalendrierEtDateSelectionnee()">
+                    <script type="text/javascript">
+                        // A PROGRAMMER:
+                        // Écrivez ici le code Javascript qui génére le code XHTML 
+                        // des options pour les siècles 19 à 21 inclusivement.
+                        // Par exemple, le siècle 19 devrait donner le XHTML
+                        // <option value="19">19</option>
+						// Par exemple, le siècle 21 devrait donner le XHTML
+                        // <option value="21">21</option>
+						// PROGRAMMER CELA DANS UNE BOUCLE for
+						for (var q = 19; q<= 21;q++){
+							  document.write('<option value="' + q + '">' + q + '</option>')
+						}
+                    </script>
+                 </select>
+         
+		         <select id="ddlAnnee" name="ddlAnnee" class="" onchange="afficheBoutonCalendrierEtDateSelectionnee()">
+                    <script type="text/javascript">
+                        // A PROGRAMMER:
+                        // Écrivez ici le code Javascript qui génére le code XHTML 
+                        // des options pour les années 0 à 99 inclusivement.
+						// Si l'année est plus petite que 10, 
+						// l'année affichée dans la liste doit être précédée d'un 0
+                        // Par exemple, l'année 0 devrait donner le XHTML
+                        // <option value="00">00</option>
+                        // Par exemple, l'année 9 devrait donner le XHTML
+                        // <option value="09">09</option>						
+                        // Par exemple, l'année 99 devrait donner le XHTML
+                        // <option value="99">99</option>
+						// PROGRAMMER CELA DANS UNE BOUCLE for
+						for (var q = 0; q<= 99;q++){
+							  document.write('<option value="' + q + '">' + q + '</option>')
+						}
+                    </script>
+                 </select>
+
+                 <input id="btnCalendrier" name="btnCalendrier" type="button"
+                    value="Calendrier"
+                    onclick="chargePageAffichageCalendrier()" />
+            </form>
+        </div>
+
+        <div id="divPanneauResultat">
+            <p class="sTitreSection">
+                <span id="lblDateSelectionnee" class="sDateSelectionnee"></span> 
+            </p>
+        </div>
+   	</div>
+   
+    <div id="divPiedDePage" class="sLargeurDiv sPiedDePage">
+        <p>
+            <a href="http://www.cgodin.qc.ca">
+                <img src="logoCGG.jpg" alt="logoCGG" />
+            </a> 
+ 			<a href="http://www.cgodin.qc.ca/programme/techniques-informatique/">
+	           Département d'informatique du Cégep Gérald-Godin
+	        </a> 
+            <br />
+            &copy; Philippe Doyon 2016
+        </p>
+    </div>
+
+</body>
+
+</html>

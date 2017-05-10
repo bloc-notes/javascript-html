@@ -1,0 +1,358 @@
+﻿<!DOCTYPE html
+PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<head>
+
+   <!-- Nécessaire pour validation -->
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+   <!-- Titre de la page -->
+   <title>Projet 1 par Philippe Doyon</title>
+
+   <!-- Insertion d’un fichier contenant une feuille de style -->
+   <link rel="stylesheet" type="text/css" href="styleProjet1.css" />
+
+   <!-- Feuille de style locale -->
+   <style type="text/css">
+   </style>
+
+   <!-- Insertion d’un fichier contenant le code JavaScript -->
+	<script type="text/javascript" src="libValidationBase.js">
+	</script>
+   
+	<script type="text/javascript">
+        function calculePaie() {
+			var tabHeureTravaille = new Array()
+			//Variable qui indique que tout est valide
+			var binTauxValide = true
+			var binHeureValide = true
+			//Valide le taux
+			var strTaux = document.getElementById('tbTauxHor').value
+			if ((estUneChaineBlanche(strTaux)) || (!(contientSeulementUnNombre(strTaux)))) {
+				document.getElementById('tbTauxHor').className = 'sNonNumerique'
+				binTauxValide = false
+			}
+			else if (!(estDansIntervalle(+strTaux,10,18.80))) {
+                document.getElementById('tbTauxHor').className = 'sHorsLimite'
+				binTauxValide = false
+            }
+			else {
+				document.getElementById('tbTauxHor').className = 'sValide'
+			}
+		   
+		   //Valide les heures
+		   var intTravailleSemaine = 0
+		   for (var i = 0; i<7;i++) {
+				var strNombre = document.getElementById('tbNbHrs'+i).value
+				
+				if ((estUneChaineBlanche(strNombre)) || (!(contientSeulementUnNombre(strNombre)))) {
+					document.getElementById('tbNbHrs'+i).className = 'sNonNumerique'
+					binHeureValide = false
+				}
+				else if (!(estDansIntervalle(+strNombre,0,16))) {
+                    document.getElementById('tbNbHrs'+i).className = 'sHorsLimite'
+					binHeureValide = false
+                }
+				else if ((strNombre % 0.25) != 0) {
+					document.getElementById('tbNbHrs'+i).className = 'sNonQuart-Heure'
+					binHeureValide = false
+				}
+				else {
+					document.getElementById('tbNbHrs'+i).className = 'sValide'
+					tabHeureTravaille.push(parseFloat(strNombre))
+					
+					//calcul le nombre de journé de travail
+					if (+strNombre > 0) {
+                        intTravailleSemaine++
+                    }					
+				}
+		   }
+		   
+		   //calcul....
+		   if (binHeureValide && binTauxValide) {
+				//heure de travail par type de rénumération
+				var fltHrNormal = 0
+				var fltHrDemi = 0
+				var fltHrDouble = 0
+								
+                for(var i=0; i<tabHeureTravaille.length; i++){
+					if ((intTravailleSemaine == 7) && (i == 6)) {
+						fltHrDouble += tabHeureTravaille[i]
+                    }
+					else if (i == 5) {
+						fltHrDemi += tabHeureTravaille[i]
+                    }
+					else if (tabHeureTravaille[i] > 8) {
+                        fltHrNormal += 8
+						fltHrDemi += tabHeureTravaille[i] - 8
+                    }
+					else
+						fltHrNormal += tabHeureTravaille[i]
+				}
+				
+				//affichage des heures normal, demi et double
+				document.getElementById('lblHeuresNormales').innerHTML = fltHrNormal.toFixed(2)
+				document.getElementById('lblHeuresDemies').innerHTML = fltHrDemi.toFixed(2)
+				document.getElementById('lblHeuresDoubles').innerHTML = fltHrDouble.toFixed(2)
+				document.getElementById('lblHeuresTotales').innerHTML = (fltHrNormal + fltHrDemi + fltHrDouble).toFixed(2)
+
+				
+				//affichage des taux normal, demi et double
+				var fltTauxN = parseFloat(strTaux)
+				document.getElementById('lblTauxHoraireNormal').innerHTML = fltTauxN.toFixed(2) + " $"
+				document.getElementById('lblTauxHoraireDemi').innerHTML = (fltTauxN * 1.5).toFixed(2) + ' $'
+				document.getElementById('lblTauxHoraireDouble').innerHTML = (strTaux * 2).toFixed(2) + ' $'
+				
+				//affichage des salaires normal, demi et double
+				var fltSalaireBrut = (fltHrNormal * strTaux) + (fltHrDemi * (strTaux * 1.5)) + (fltHrDouble * (strTaux * 2))
+				
+				document.getElementById('lblSalaireNormal').innerHTML = (fltHrNormal * strTaux).toFixed(2) + ' $'
+				document.getElementById('lblSalaireDemi').innerHTML = (fltHrDemi * (strTaux * 1.5)).toFixed(2) + ' $'
+				document.getElementById('lblSalaireDouble').innerHTML = (fltHrDouble * (strTaux * 2)).toFixed(2) + ' $'
+				document.getElementById('lblSalaireBrut').innerHTML = fltSalaireBrut.toFixed(2) + ' $'
+				
+				
+				//déduction...
+				
+				var fltSalaireBrutReajuster = fltSalaireBrut - (fltSalaireBrut * 0.0715)
+				
+				//Assurence personnel
+				
+				document.getElementById('lblAssurances').innerHTML = (fltSalaireBrut * 0.015).toFixed(2) + ' $'
+				
+				//Syndicat
+				
+				document.getElementById('lblSyndicat').innerHTML = (fltSalaireBrut * 0.0175).toFixed(2) + ' $'
+				
+				//Assurance emploi
+				
+				document.getElementById('lblAE').innerHTML = (fltSalaireBrut * 0.0275).toFixed(2) + ' $'
+				
+				//R.R.Q
+				
+				document.getElementById('lblRRQ').innerHTML = (fltSalaireBrut * 0.0265).toFixed(2) + ' $'
+				
+				//Impot Fédéral
+				var fltImpotFederal = 0
+				
+				if (fltSalaireBrutReajuster <= 450) {
+					fltImpotFederal = fltSalaireBrutReajuster * 0.1
+				}
+				else if (fltSalaireBrutReajuster <= 800) {
+					fltImpotFederal = (450 * 0.1) + ((fltSalaireBrutReajuster - 450) * 0.15)
+				}
+				else {
+					fltImpotFederal = (450 * 0.1) + (350 * 0.15) + ((fltSalaireBrutReajuster - 800) * 0.2)
+				}
+				document.getElementById('lblImpotFederal').innerHTML = fltImpotFederal.toFixed(2) + ' $'
+				
+				//Impot provincial
+				var fltImpotProvincial = 0
+				
+				if (fltSalaireBrutReajuster <= 350) {
+					fltImpotProvincial = fltSalaireBrutReajuster * 0.15
+				}
+				else if (fltSalaireBrutReajuster <= 600) {
+					fltImpotProvincial = (350 * 0.15) + ((fltSalaireBrutReajuster - 350) * 0.2)
+				}
+				else {
+					fltImpotProvincial = (350 * 0.15) + (250 * 0.2) + ((fltSalaireBrutReajuster - 600) * 0.25)
+				}
+				document.getElementById('lblImpotProvincial').innerHTML = fltImpotProvincial.toFixed(2) + ' $'
+				
+				//Déduction total 
+				var fltDeductionTotal = (fltSalaireBrut * 0.0865) + fltImpotFederal + fltImpotProvincial
+				
+				document.getElementById('lblDeductionsTotales').innerHTML = fltDeductionTotal.toFixed(2) + ' $'
+				
+				//Salaire net
+				
+				document.getElementById('lblSalaireNet').innerHTML = (fltSalaireBrut - fltDeductionTotal).toFixed(2) + ' $'
+		   }
+       }
+	</script>
+
+	<script type="text/javascript">
+       function effaceDonnees() {
+           //efface textbox
+		   document.getElementById('tbTauxHor').value = ''
+		   document.getElementById('tbTauxHor').className = 'sCouleurFondZoneDeTexteNormal'
+		   
+		   for(var i = 0; i<7;i++){
+				document.getElementById('tbNbHrs'+i).value = ''
+				document.getElementById('tbNbHrs'+i).className = 'sCouleurFondZoneDeTexteNormal'
+		   }
+		   
+		   //efface étiquette blanche
+		   for (var j=0; j < 15;j++){
+				document.getElementsByClassName('sResultat')[j].innerHTML = ''
+		   }
+		   
+		   //efface étiquette verte
+		   for (var k=0; k < 5;k++){
+				document.getElementsByClassName('sResultatC')[k].innerHTML = ''
+		   }
+       }
+	</script>
+   
+</head>
+
+<body>
+    <div id="divEntete" class="sTexteCentre sLargeurDiv sEntete">
+        <p> 
+            <span class="sTitreApp">
+                Projet 1 - Bordereau de paie pour la semaine<br />
+                du 29 février au 6 mars 2016<br />
+            </span> par 
+            <span class="sAuteurApp">
+                Philippe Doyon
+            </span> 
+		</p>
+    </div>
+    
+   <div id="divCorps" class="sLargeurDiv sCorps">
+        <div id="divPanneauSaisie" class="sFlottantAGauche">
+		 <p class="sTitreSection">
+			Saisie des données
+		 </p>
+		 Taux<br />
+		 <input id="tbTauxHor" name="tbSaisie" class="sCouleurFondZoneDeTexteNormal" type="text" maxlength="5" /> $<br /><br />
+		 Heures travaillées<br /><br />
+		 Lundi<br />
+		 <input id="tbNbHrs0" name="tbSaisie" class="sCouleurFondZoneDeTexteNormal" type="text" maxlength="5" /> h<br /><br />
+		 Mardi<br />
+		 <input id="tbNbHrs1" name="tbSaisie" class="sCouleurFondZoneDeTexteNormal" type="text" maxlength="5" /> h<br /><br />
+		 Mercredi<br />
+		 <input id="tbNbHrs2" name="tbSaisie" class="sCouleurFondZoneDeTexteNormal" type="text" maxlength="5" /> h<br /><br />
+		 Jeudi<br />
+		 <input id="tbNbHrs3" name="tbSaisie" class="sCouleurFondZoneDeTexteNormal" type="text" maxlength="5" /> h<br /><br />
+		 Vendredi<br />
+		 <input id="tbNbHrs4" name="tbSaisie" class="sCouleurFondZoneDeTexteNormal" type="text" maxlength="5" /> h<br /><br />
+		 Samedi<br />
+		 <input id="tbNbHrs5" name="tbSaisie" class="sCouleurFondZoneDeTexteNormal" type="text" maxlength="5" /> h<br /><br />
+		 Dimanche<br />
+		 <input id="tbNbHrs6" name="tbSaisie" class="sCouleurFondZoneDeTexteNormal" type="text" maxlength="5" /> h
+		</div>
+  
+		<div id="divPanneauResultats" class="sFlottantADroite">
+        <p class="sTitreSection">
+            Calcul du salaire
+        </p>
+        <table>
+            <tr>
+               <td colspan="2"></td>
+               <td>
+                    <input id="btnCalculer" name="btnCalculer" type="button" value="Calculer" onclick="calculePaie()" />
+               </td>
+               <td>
+                    <input id="btnEffacer" name="btnEffacer" type="button" value="Effacer" onclick="effaceDonnees()" />
+               </td>
+            </tr>
+            <tr>
+               <td colspan="4" class="sHauteurReduit">&nbsp;</td>
+            </tr>
+            <tr>
+               <td></td>
+               <td class="sEnteteColonneTableau">Heures&nbsp;</td>
+               <td class="sEnteteColonneTableau">Taux horaire&nbsp;</td>
+               <td class="sEnteteColonneTableau">Salaire brut&nbsp;</td>
+            </tr>
+            <tr>
+               <td class="sEnteteLigneTableau">Heures normales&nbsp;</td>
+               <td id="lblHeuresNormales" class="sResultat" ></td>
+               <td id="lblTauxHoraireNormal" class="sResultat"></td>
+               <td id="lblSalaireNormal" class="sResultat"></td>
+            </tr>
+            <tr>
+               <td class="sEnteteLigneTableau">Heures à temps et demi&nbsp;</td>
+               <td id="lblHeuresDemies" class="sResultat"></td>
+               <td id="lblTauxHoraireDemi" class="sResultat"></td>
+               <td id="lblSalaireDemi" class="sResultat"></td>
+            </tr>
+            <tr>
+               <td class="sEnteteLigneTableau">Heures à temps double&nbsp;</td>
+               <td id="lblHeuresDoubles" class="sResultat"></td>
+               <td id="lblTauxHoraireDouble" class="sResultat"></td>
+               <td id="lblSalaireDouble" class="sResultat"></td>
+            </tr>
+            <tr>
+               <td class="sEnteteLigneTableau">Heures travaillées totales&nbsp;</td>
+               <td id="lblHeuresTotales" class="sResultatC"></td>
+               <td id="lblNA" class="sResultatCNA">N/A</td>
+               <td id="lblSalaireBrut" class="sResultatC"></td>
+            </tr>
+            <tr>
+               <td colspan="4" class="sHauteurReduit"></td>
+            </tr>
+            <tr>
+               <td colspan="3"></td>
+               <td class="sEnteteColonneTableau">Déductions&nbsp;</td>
+            </tr>
+            <tr>
+               <td></td>
+               <td colspan="2" class="sEnteteLigneTableau">Assurances personnelles&nbsp;</td>
+               <td id="lblAssurances" class="sResultat"></td>
+            </tr>
+            <tr>
+               <td></td>
+               <td colspan="2" class="sEnteteLigneTableau">Cotisations syndicales&nbsp;</td>
+               <td id="lblSyndicat" class="sResultat"></td>
+            </tr>
+            <tr>
+               <td></td>
+               <td colspan="2" class="sEnteteLigneTableau">Assurance-emploi&nbsp;</td>
+               <td id="lblAE" class="sResultat"></td>
+            </tr>
+            <tr>
+               <td></td>
+               <td colspan="2" class="sEnteteLigneTableau">R.R.Q.&nbsp;</td>
+               <td id="lblRRQ" class="sResultat"></td>
+            </tr>
+            <tr>
+               <td></td>
+               <td colspan="2" class="sEnteteLigneTableau">Impôt fédéral&nbsp;</td>
+               <td id="lblImpotFederal" class="sResultat"></td>
+            </tr>
+            <tr>
+               <td></td>
+               <td colspan="2" class="sEnteteLigneTableau">Impôt provincial&nbsp;</td>
+               <td id="lblImpotProvincial" class="sResultat"></td>
+            </tr>
+            <tr>
+               <td></td>
+               <td colspan="2" class="sEnteteLigneTableau">Déductions totales&nbsp;</td>
+               <td id="lblDeductionsTotales" class="sResultatC"></td>
+            </tr>
+            <tr>
+               <td colspan="4" class="sHauteurReduit"></td>
+            </tr>
+            <tr>
+               <td colspan="3"></td>
+               <td class="sEnteteColonneTableau">Salaire net&nbsp;</td>
+            </tr>
+            <tr>
+               <td colspan="3">&nbsp;</td>
+               <td id="lblSalaireNet" class="sResultatC"></td>
+            </tr>
+        </table> 
+		</div>    
+    </div>
+
+    <div id="divPiedDePage" class="sLargeurDiv sPiedDePage">
+        <p>
+            <a href="http://www.cgodin.qc.ca">
+                <img src="logoCGG.jpg" alt="logoCGG" />
+            </a> 
+            <a href="http://www.cgodin.qc.ca/programme/techniques-informatique/">
+	           Département d'informatique du Cégep Gérald-Godin
+	        </a> 
+            <br />
+            &copy; <span class="sAuteurApp"> Philippe Doyon </span> 2016
+        </p>
+    </div>
+
+</body>
+
+</html>
